@@ -1,11 +1,12 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 
 const routes = [
     {
         path: '/',
-        redirect: '/dashboard'
-    }, {
+        redirect: '/login'
+    }, 
+    {
         path: "/",
         name: "Home",
         component: Home,
@@ -84,34 +85,32 @@ const routes = [
                 component: () => import(/* webpackChunkName: "user" */ '../views/user/User.vue')
             }
         ]
-    }, {
+    },
+    {
         path: "/login",
         name: "Login",
         meta: {
             title: '登录'
         },
         component: () => import( /* webpackChunkName: "login" */ "../views/login/Login.vue")
-    }
+    },
+    {
+        path: "/register",
+        name: "Register",
+        meta: {
+            title: '注册'
+        },
+        component: () => import( /* webpackChunkName: "dashboard" */ "../views/login/Register.vue")
+    },
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes
 });
 
-router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
-    const role = localStorage.getItem('ms_username');
-    if (!role && to.path !== '/login') {
-        next('/login');
-    } else if (to.meta.permission) {
-        // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
-        role === 'admin'
-            ? next()
-            : next('/403');
-    } else {
-        next();
-    }
+router.beforeEach((to, from) => {
+  
 });
 
 export default router;
