@@ -1,36 +1,32 @@
 import request from './request';
 
-export function selectOrderBySeller(seller) {
+export function selectOrderBySeller(params) {
   return request({
     url: `/mall/order/selectbyseller/${seller}`
-  });
+  })
 }
 
 // 取消订单
 export function cancelOrderById(data) {
   return request({
     url: `/mall/order/cancels`,
-    method: 'put',
-    data
-  });
+		method: 'put',
+		data
+  })
 }
 
 // 删除订单
 export function delOrderById(data) {
   return request({
     url: `/mall/order/delete`,
-    method: 'delete',
-    data
-  });
+		method: 'delete',
+		data
+  })
 }
 
 // 查询用户订单
-export function getUserOrderByUserName(user, seller) {
+export function getUserOrderByUserName(user) {
   return request({
-    url: `/mall/order/selectselleranduser`,
-    params: {
-      user,
-      seller
-    }
-  });
+    url: `/mall/order/selectbyuser/${user}`,
+  })
 }

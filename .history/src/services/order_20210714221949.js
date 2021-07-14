@@ -27,10 +27,7 @@ export function delOrderById(data) {
 // 查询用户订单
 export function getUserOrderByUserName(user, seller) {
   return request({
-    url: `/mall/order/selectselleranduser`,
-    params: {
-      user,
-      seller
-    }
+    url: `/mall/order/selectbyuser/?user=${user}&seller=${seller}`,
+    url: `/mall/oder/selectbyuse`
   });
 }

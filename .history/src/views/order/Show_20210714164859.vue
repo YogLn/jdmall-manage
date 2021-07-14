@@ -1,20 +1,8 @@
 <template>
-  <el-card>
-    <el-row :gutter="20">
-      <el-col :span="8">
-        <el-input v-model="inputUserName"
-                  placeholder="请输入要查询的用户名"
-                  maxlength="60"></el-input>
-      </el-col>
-      <el-col :span="8">
-        <el-button type="primary"
-                   @click="getUserOrderList">查询用户订单</el-button>
-      </el-col>
-    </el-row>
-
-    <el-table :data="userOrderList"
+  <div class="">
+    <el-table :data="orderTable"
               style="width: 100%"
-              max-height="480px">
+              max-height="450">
       <el-table-column prop="id"
                        label="订单号"
                        width="150">
@@ -70,32 +58,27 @@
         </template>
       </el-table-column>
     </el-table>
-  </el-card>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import { getUserOrderByUserName, cancelOrderById, delOrderById } from '../../services/order';
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
+import { cancelOrderById, selectOrderBySeller, delOrderById } from '../../services/order'
 export default {
   setup () {
-
-    const inputUserName = ref()
-    const userOrderList = ref([])
-    const getUserOrderList = () => {
-      getUserOrderByUserName(inputUserName.value, localStorage.getItem("username")).then(res => {
-
-        if (res.code === 200) {
-          if (res.data.records.length === 0) {
-            return ElMessage.error('没有该用户的订单信息')
-          }
-          ElMessage.success('查询成功')
-          userOrderList.value = res.data.records
-        } else {
-          ElMessage.error('查询失败')
-        }
-      })
+    let orderTable = ref([])
+    orderTable.value = {
+      pageNo: 1,
+      pageSize: 10,
+      seller: localStorage.getItem("username")
     }
+    console.log();
+    selectOrderBySeller(_.co).then(res => {
+      console.log(res);
+      orderTable.value = res.data.records
+    })
 
     // 删除订单
     const delOrder = (id) => {
@@ -112,13 +95,13 @@ export default {
           ]
           delOrderById(data).then(res => {
             if (res.code === 200) {
+              selectOrderBySeller(localStorage.getItem("username")).then(res => {
+                orderTable.value = res.data.records
+              })
               ElMessage.success({
                 message: '删除成功',
                 type: 'success'
               });
-              getUserOrderByUserName(inputUserName.value).then(res => {
-                userOrderList.value = res.data.records
-              })
             } else {
               ElMessage.error('删除失败')
             }
@@ -152,8 +135,8 @@ export default {
                 message: '取消成功',
                 type: 'success'
               });
-              getUserOrderByUserName(inputUserName.value).then(res => {
-                userOrderList.value = res.data.records
+              selectOrderBySeller(localStorage.getItem("username")).then(res => {
+                orderTable.value = res.data.records
               })
             } else {
               ElMessage.error('取消失败')
@@ -169,20 +152,13 @@ export default {
     }
 
     return {
-      getUserOrderByUserName,
-      userOrderList,
+      orderTable,
       delOrder,
-      canOrder,
-      inputUserName,
-      getUserOrderList
+      canOrder
     }
   }
-
 }
 </script>
 
-<style scoped>
-.el-table {
-  margin-top: 20px;
-}
+<style>
 </style>

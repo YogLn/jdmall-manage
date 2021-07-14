@@ -81,10 +81,10 @@ export default {
   setup () {
 
     const inputUserName = ref()
+
     const userOrderList = ref([])
     const getUserOrderList = () => {
       getUserOrderByUserName(inputUserName.value, localStorage.getItem("username")).then(res => {
-
         if (res.code === 200) {
           if (res.data.records.length === 0) {
             return ElMessage.error('没有该用户的订单信息')
