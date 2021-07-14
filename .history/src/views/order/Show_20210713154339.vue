@@ -1,0 +1,26 @@
+<template>
+  <div class="">
+    <el-table :data="orderTable"
+              style="width: 100%"
+              max-height="450">
+      <el-table-column                       prop="date"
+                       label="日期"
+                       width="150">
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script>
+import { selectOrderBySeller } from '../../services/order';
+export default {
+  setup () {
+    selectOrderBySeller(localStorage.getItem("username")).then(res => {
+      orderTable = res.data.records
+    })
+  }
+}
+</script>
+
+<style>
+</style>
